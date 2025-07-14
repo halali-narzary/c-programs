@@ -1,3 +1,4 @@
+//यह प्रोग्राम malloc() और free() का उपयोग करके डायनामिक मेमोरी आवंटन लागू करता है।
 #include <stdio.h>
 #include <stdlib.h>
 
