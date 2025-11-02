@@ -1,0 +1,69 @@
+Q)Write a C program to create a doubly linked list and implement functions to insert a node after a given node and to delete a node from the beginning.
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+void insertAfter(struct Node* prev_node, int value) {
+    if (prev_node == NULL) {
+        printf("Previous node cannot be NULL\n");
+        return;
+    }
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = prev_node->next;
+    newNode->prev = prev_node;
+    if (prev_node->next != NULL)
+        prev_node->next->prev = newNode;
+    prev_node->next = newNode;
+}
+
+
+void deleteFromBeginning() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = head;
+    head = head->next;
+    if (head != NULL)
+        head->prev = NULL;
+    free(temp);
+}
+
+void display() {
+    struct Node* temp = head;
+    if (temp == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    printf("List contents: ");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    // Example usage:
+    head = malloc(sizeof(struct Node));
+    head->data = 10;
+    head->prev = NULL;
+    head->next = NULL;
+
+    insertAfter(head, 20);
+    insertAfter(head, 30);
+    display();
+
+    deleteFromBeginning();
+    display();
+
+    return 0;
+}
