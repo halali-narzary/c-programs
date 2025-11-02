@@ -1,0 +1,66 @@
+Q) Write a C program to implement a header linked list where the header node stores a count of the total number of elements. The program should update the count during insertion and deletion.
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Header {
+    int count;
+    struct Node* next;
+};
+
+struct Header* header;
+
+void initList() {
+    header = malloc(sizeof(struct Header));
+    header->count = 0;
+    header->next = NULL;
+}
+
+void insertAtBeginning(int value) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = header->next;
+    header->next = newNode;
+    header->count++;
+}
+
+void deleteFromBeginning() {
+    if (header->next == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = header->next;
+    header->next = temp->next;
+    free(temp);
+    header->count--;
+}
+
+void display() {
+    struct Node* temp = header->next;
+    if (temp == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    printf("List contents (%d nodes): ", header->count);
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    initList();
+    insertAtBeginning(10);
+    insertAtBeginning(20);
+    display();
+
+    deleteFromBeginning();
+    display();
+
+    return 0;
+}
