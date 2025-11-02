@@ -1,0 +1,13 @@
+Q) Explain the primary differences between an array and a linked list in terms of memory allocation, insertion/deletion efficiency, and data access.
+ANS:-
+Memory Allocation:
+                Arrays use contiguous memory and must be defined with a fixed size at creation, which can lead to wasted space if not all elements are used.
+                Linked lists store each node separately in scattered memory and can grow or shrink as needed, thus using memory more efficiently.
+
+Insertion/Deletion Efficiency: 
+                In arrays, insertion and deletion operations can require shifting elements, making these operations slow (O(n)). 
+                In linked lists, insertion and deletion are efficient (O(1)) because they involve only pointer adjustments, not shifting entire blocks of data.
+
+Data Access: 
+                Arrays allow direct, random access to any element using indices (O(1) time). Linked lists allow only sequential (linear) access; to reach the nth node, 
+                all previous nodes must be traversed (O(n) time).
