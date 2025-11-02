@@ -1,0 +1,84 @@
+Q)Implement a C program for a circular linked list that inserts a node at the beginning and deletes a node from the end.
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+void insertAtBeginning(int value) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = value;
+    if (head == NULL) {
+        newNode->next = newNode;
+        head = newNode;
+        return;
+    }
+    struct Node* temp = head;
+    while (temp->next != head)
+        temp = temp->next;
+    newNode->next = head;
+    temp->next = newNode;
+    head = newNode;
+}
+
+void deleteFromEnd() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    if (head->next == head) {
+        free(head);
+        head = NULL;
+        return;
+    }
+    struct Node* temp = head;
+    while (temp->next->next != head)
+        temp = temp->next;
+    struct Node* last = temp->next;
+    temp->next = head;
+    free(last);
+}
+
+void display() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = head;
+    printf("List contents: ");
+    do {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+    printf("\n");
+}
+
+int main() {
+    int choice, value;
+    while (1) {
+        printf("\nMenu:\n1. Insert at beginning\n2. Delete from end\n3. Display\n4. Exit\nChoice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+        case 1:
+            printf("Enter value: ");
+            scanf("%d", &value);
+            insertAtBeginning(value);
+            break;
+        case 2:
+            deleteFromEnd();
+            break;
+        case 3:
+            display();
+            break;
+        case 4:
+            exit(0);
+        default:
+            printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}
