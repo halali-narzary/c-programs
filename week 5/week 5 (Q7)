@@ -1,0 +1,93 @@
+Q)Write a C program that uses linked lists to represent two polynomials, adds them, and displays the resulting polynomial.
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int coef;
+    int exp;
+    struct Node* next;
+};
+
+struct Node* createNode(int c, int e) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->coef = c;
+    newNode->exp = e;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void insertTerm(struct Node** poly, int c, int e) {
+    struct Node* newNode = createNode(c, e);
+    if (*poly == NULL || (*poly)->exp < e) {
+        newNode->next = *poly;
+        *poly = newNode;
+    } else {
+        struct Node* temp = *poly;
+        while (temp->next != NULL && temp->next->exp >= e)
+            temp = temp->next;
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+}
+
+struct Node* addPolynomials(struct Node* p1, struct Node* p2) {
+    struct Node* result = NULL;
+    while (p1 != NULL && p2 != NULL) {
+        if (p1->exp == p2->exp) {
+            insertTerm(&result, p1->coef + p2->coef, p1->exp);
+            p1 = p1->next;
+            p2 = p2->next;
+        } else if (p1->exp > p2->exp) {
+            insertTerm(&result, p1->coef, p1->exp);
+            p1 = p1->next;
+        } else {
+            insertTerm(&result, p2->coef, p2->exp);
+            p2 = p2->next;
+        }
+    }
+    while (p1 != NULL) {
+        insertTerm(&result, p1->coef, p1->exp);
+        p1 = p1->next;
+    }
+    while (p2 != NULL) {
+        insertTerm(&result, p2->coef, p2->exp);
+        p2 = p2->next;
+    }
+    return result;
+}
+
+void displayPolynomial(struct Node* poly) {
+    struct Node* temp = poly;
+    while (temp != NULL) {
+        printf("%dx^%d", temp->coef, temp->exp);
+        if (temp->next != NULL) printf(" + ");
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Node* p1 = NULL;
+    struct Node* p2 = NULL;
+    struct Node* sum = NULL;
+
+   
+    insertTerm(&p1, 5, 2);
+    insertTerm(&p1, 4, 1);
+    insertTerm(&p1, 2, 0);
+
+    
+    insertTerm(&p2, 5, 1);
+    insertTerm(&p2, 5, 0);
+
+    printf("Polynomial 1: ");
+    displayPolynomial(p1);
+    printf("Polynomial 2: ");
+    displayPolynomial(p2);
+
+    sum = addPolynomials(p1, p2);
+    printf("Sum: ");
+    displayPolynomial(sum);
+
+    return 0;
+}
