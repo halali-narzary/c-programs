@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct Queue {
+    Node* front;
+    Node* rear;
+} Queue;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+Queue* createQueue() {
+    Queue* queue = (Queue*)malloc(sizeof(Queue));
+    if (queue == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    queue->front = NULL;
+    queue->rear = NULL;
+    return queue;
+}
+
+int isEmpty(Queue* queue) {
+    return queue->front == NULL;
+}
+
+void enqueue(Queue* queue, int value) {
+    Node* newNode = createNode(value);
+    if (isEmpty(queue)) {
+        queue->front = newNode;
+        queue->rear = newNode;
+    } else {
+        queue->rear->next = newNode;
+        queue->rear = newNode;
+    }
+    printf("Enqueued: %d\n", value);
+}
+
+int dequeue(Queue* queue) {
+    if (isEmpty(queue)) {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    Node* temp = queue->front;
+    int item = temp->data;
+    queue->front = queue->front->next;
+
+    if (queue->front == NULL) {
+        queue->rear = NULL;
+    }
+    free(temp);
+    return item;
+}
+
+int peek(Queue* queue) {
+    if (isEmpty(queue)) {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    return queue->front->data;
+}
+
+void printQueue(Queue* queue) {
+    if (isEmpty(queue)) {
+        printf("Queue is empty\n");
+        return;
+    }
+    Node* current = queue->front;
+    printf("Queue elements: ");
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void destroyQueue(Queue* queue) {
+    Node* current = queue->front;
+    Node* next;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    free(queue);
+}
+
+int main() {
+    Queue* queue = createQueue();
+
+    enqueue(queue, 10);
+    printf("Queue after 1st enqueue:\n");
+    printQueue(queue);
+
+    enqueue(queue, 20);
+    printf("Queue after 2nd enqueue:\n");
+    printQueue(queue);
+
+    printf("Peek value: %d\n", peek(queue));
+
+    printf("Dequeued: %d\n", dequeue(queue));
+    printf("Queue after 1st dequeue:\n");
+    printQueue(queue);
+
+    enqueue(queue, 30);
+    printf("Queue after 3rd enqueue:\n");
+    printQueue(queue);
+
+    printf("Dequeued: %d\n", dequeue(queue));
+    printf("Queue after 2nd dequeue:\n");
+    printQueue(queue);
+
+    printf("Dequeued: %d\n", dequeue(queue));
+    printf("Queue after 3rd dequeue:\n");
+    printQueue(queue);
+
+    printf("Is queue empty: %s\n", isEmpty(queue) ? "True" : "False");
+
+    destroyQueue(queue);
+
+    return 0;
+}
