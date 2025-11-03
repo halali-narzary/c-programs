@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_SIZE 5
+
+struct Queue {
+    int items[MAX_SIZE];
+    int front;
+    int rear;
+};
+
+struct Queue* createQueue() {
+    struct Queue* queue = (struct Queue*)malloc(sizeof(struct Queue));
+    queue->front = -1;
+    queue->rear = -1;
+    return queue;
+}
+
+int isEmpty(struct Queue* queue) {
+    return queue->front == -1;
+}
+
+int isFull(struct Queue* queue) {
+    return (queue->rear + 1) % MAX_SIZE == queue->front;
+}
+
+void enqueue(struct Queue* queue, int value) {
+    if (isFull(queue)) {
+        printf("Queue is full\n");
+        return;
+    }
+    if (isEmpty(queue)) {
+        queue->front = 0;
+    }
+    queue->rear = (queue->rear + 1) % MAX_SIZE;
+    queue->items[queue->rear] = value;
+    printf("Enqueued: %d\n", value);
+}
+
+int dequeue(struct Queue* queue) {
+    int item;
+    if (isEmpty(queue)) {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    item = queue->items[queue->front];
+    if (queue->front == queue->rear) {
+        queue->front = -1;
+        queue->rear = -1;
+    } else {
+        queue->front = (queue->front + 1) % MAX_SIZE;
+    }
+    return item;
+}
+
+int peek(struct Queue* queue) {
+    if (isEmpty(queue)) {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    return queue->items[queue->front];
+}
+
+void printQueue(struct Queue* queue) {
+    int i;
+    if (isEmpty(queue)) {
+        printf("Queue is empty\n");
+        return;
+    }
+    printf("Queue elements: ");
+    for (i = queue->front; i != queue->rear; i = (i + 1) % MAX_SIZE) {
+        printf("%d ", queue->items[i]);
+    }
+    printf("%d\n", queue->items[i]);
+}
+
+int main() {
+    struct Queue* queue = createQueue();
+
+    enqueue(queue, 10);
+    enqueue(queue, 20);
+    enqueue(queue, 30);
+    printQueue(queue);
+
+    printf("Front element: %d\n", peek(queue));
+
+    printf("Dequeued: %d\n", dequeue(queue));
+    printf("Dequeued: %d\n", dequeue(queue));
+    printQueue(queue);
+
+    printf("Is queue empty: %s\n", isEmpty(queue) ? "True" : "False");
+
+    enqueue(queue, 40);
+    enqueue(queue, 50);
+    enqueue(queue, 60);
+    printQueue(queue);
+
+    printf("Dequeued: %d\n", dequeue(queue));
+    printf("Is queue empty: %s\n", isEmpty(queue) ? "True" : "False");
+
+    free(queue);
+
+    return 0;
+}
