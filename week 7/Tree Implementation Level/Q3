@@ -1,0 +1,128 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+Node* insertNode(Node* node, int data) {
+    if (node == NULL) {
+        return createNode(data);
+    }
+    if (data < node->data) {
+        node->left = insertNode(node->left, data);
+    } else if (data > node->data) {
+        node->right = insertNode(node->right, data);
+    }
+    return node;
+}
+
+Node* searchNode(Node* root, int key) {
+    if (root == NULL || root->data == key) {
+        return root;
+    }
+    if (key < root->data) {
+        return searchNode(root->left, key);
+    } else {
+        return searchNode(root->right, key);
+    }
+}
+
+void preorder(Node* node) {
+    if (node == NULL) {
+        return;
+    }
+    printf("%d ", node->data);
+    preorder(node->left);
+    preorder(node->right);
+}
+
+void inorder(Node* node) {
+    if (node == NULL) {
+        return;
+    }
+    inorder(node->left);
+    printf("%d ", node->data);
+    inorder(node->right);
+}
+
+void postorder(Node* node) {
+    if (node == NULL) {
+        return;
+    }
+    postorder(node->left);
+    postorder(node->right);
+    printf("%d ", node->data);
+}
+
+void destroyTree(Node* node) {
+    if (node == NULL) {
+        return;
+    }
+    destroyTree(node->left);
+    destroyTree(node->right);
+    free(node);
+}
+
+int main() {
+    Node* root = NULL;
+    Node* result = NULL;
+    int search_key_present = 40;
+    int search_key_absent = 99;
+
+    root = insertNode(root, 50);
+    insertNode(root, 30);
+    insertNode(root, 70);
+    insertNode(root, 20);
+    insertNode(root, 40);
+    insertNode(root, 60);
+    insertNode(root, 80);
+
+    printf("Binary Search Tree created with root 50.\n");
+    printf("Inorder Traversal: ");
+    inorder(root);
+    printf("\n\n");
+
+    printf("--- Search Tests ---\n");
+
+    result = searchNode(root, search_key_present);
+    if (result != NULL) {
+        printf("Found %d in the BST.\n", search_key_present);
+    } else {
+        printf("%d not found in the BST.\n", search_key_present);
+    }
+
+    result = searchNode(root, search_key_absent);
+    if (result != NULL) {
+        printf("Found %d in the BST.\n", search_key_absent);
+    } else {
+        printf("%d not found in the BST.\n", search_key_absent);
+    }
+    printf("\n");
+
+    printf("Preorder Traversal (Root, Left, Right):\n");
+    preorder(root);
+    printf("\n");
+
+    printf("Postorder Traversal (Left, Right, Root):\n");
+    postorder(root);
+    printf("\n");
+
+    destroyTree(root);
+
+    return 0;
+}
